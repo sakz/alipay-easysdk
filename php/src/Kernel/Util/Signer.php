@@ -51,6 +51,7 @@ class Signer
 
     public function getSignContent($params)
     {
+        $params=$this->removeEscapesFromArray($params);
         ksort($params);
         unset($params['sign']);
         unset($params['sign_type']);
@@ -68,5 +69,19 @@ class Signer
         }
         unset ($k, $v);
         return $stringToBeSigned;
+    }
+
+    public function removeEscapesFromArray($array) {
+        $result = array();
+        foreach ($array as $key => $value) {
+            if (is_string($value)) {
+                $result[$key] = stripslashes($value);
+            } elseif (is_array($value)) {
+                $result[$key] = $this->removeEscapesFromArray($value);
+            } else {
+                $result[$key] = $value;
+            }
+        }
+        return $result;
     }
 }
